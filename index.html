@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook-Gacha! 냉장고 뽑기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 50px;
+        }
+        h1 { color: #ff6b6b; }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+        }
+        button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #fa5252; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🍳 Cook-Gacha!</h1>
+        <p>냉장고에 있는 재료를 쉼표(,)로 구분해서 적어보세요.</p>
+        <input type="text" id="ingredients" placeholder="예: 두부, 김치, 스팸">
+        <br>
+        <button onclick="startGacha()">레시피 뽑기! 🎰</button>
+    </div>
+
+    <script>
+        function startGacha() {
+            const ingredients = document.getElementById('ingredients').value;
+            if(!ingredients) {
+                alert('재료를 입력해주세요!');
+                return;
+            }
+            alert(ingredients + '(으)로 만들 수 있는 마법 같은 레시피를 찾는 중...');
+        }
+    </script>
+</body>
+</html>
