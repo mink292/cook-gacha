@@ -3,60 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cook-Gacha! 냉장고 뽑기</title>
+    <title>Cook-Gacha! 냉장고 뽑기 MVP</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f9f9f9;
-            padding: 50px;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f9f9f9; padding: 50px; }
         h1 { color: #ff6b6b; }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 50px;
-        }
-        button {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+        input { width: 80%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 50px; font-size: 16px; text-align: center; }
+        button { background-color: #ff6b6b; color: white; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         button:hover { background-color: #fa5252; }
+        #result { margin-top: 25px; text-align: left; background: #fff5f5; padding: 20px; border-radius: 10px; display: none; white-space: pre-wrap; line-height: 1.6; border-left: 5px solid #ff6b6b; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🍳 Cook-Gacha!</h1>
-        <p>냉장고에 있는 재료를 쉼표(,)로 구분해서 적어보세요.</p>
-        <input type="text" id="ingredients" placeholder="예: 두부, 김치, 스팸">
+        <h1>🍳 Cook-Gacha! (MVP)</h1>
+        <p>집에 있는 재료를 입력하고 가챠를 돌려보세요!</p>
+        <input type="text" id="ingredients" placeholder="예: 김치, 두부, 달걀, 스팸">
         <br>
         <button onclick="startGacha()">레시피 뽑기! 🎰</button>
+        
+        <div id="result"></div>
     </div>
 
     <script>
+        // 1. 우리가 미리 저장해둔 레시피 데이터베이스 (창고 역할)
+        const recipeDatabase = [
+            {
+                name: "🔥 보글보글 스팸 김치찌개",
+                ingredients: ["김치", "스팸"],
+                recipe: "1. 냄비에 김치와 스팸을 먹기 좋은 크기로 썰어 넣습니다.\n2. 재료가 잠길 정도로 물을 붓고 끓입니다.\n3. 고춧가루와 설탕을 반 스푼씩 넣고 푹 끓이면 완성!"
+            },
+            {
+                name: "💛 초간단 부들부들 두부조림",
+                ingredients: ["두부"],
+                recipe: "1. 두부를 도톰하게 썰어 팬에 앞뒤로 노릇하게 굽습니다.\n2. 간장 2스푼, 물 3스푼, 설탕 0.5스푼을 섞어 양념장을 만듭니다.\n3. 구운 두부에 양념장을 붓고 자작하게 졸이면 완성!"
+            },
+            {
+                name: "🍳 고소함 폭발 달걀 볶음밥",
+                ingredients: ["달걀"],
+                recipe: "1. 팬에 기름을 두르고 달걀을 깨넣어 스크램블을 만듭니다.\n2. 찬밥을 넣고 달걀과 함께 잘 볶아줍니다.\n3. 간장이나 소금으로 간을 맞추면 초간단 볶음밥 완성!"
+            },
+            {
+                name: "✨ 냉장고 대통합 김치 두부 두루치기",
+                ingredients: ["김치", "두부"],
+                recipe: "1. 두부는 뜨거운 물에 살짝 데쳐서 썰어둡니다.\n2. 팬에 기름을 두르고 김치를 달달 볶아줍니다.\n3. 접시에 두부를 예쁘게 담고 볶은 김치를 얹어 함께 싸서 드세요!"
+            }
+        ];
+
+        // 2. 버튼을 누르면 실행되는 가챠 로직 (두뇌 역할)
         function startGacha() {
-            const ingredients = document.getElementById('ingredients').value;
-            if(!ingredients) {
+            const userInput = document.getElementById('ingredients').value;
+            const resultDiv = document.getElementById('result');
+            
+            if(!userInput) {
                 alert('재료를 입력해주세요!');
                 return;
             }
-            alert(ingredients + '(으)로 만들 수 있는 마법 같은 레시피를 찾는 중...');
+            
+            // 사용자가 입력한 글자에 매칭되는 레시피 찾기
+            let matchedRecipe = null;
+            
+            // 우리가 만든 레시피 창고를 하나씩 뒤집니다.
+            for (let item of recipeDatabase) {
+                // 레시피에 필요한 재료들이 사용자가 입력한 문자열에 포함되어 있는지 확인
+                let hasAllIngredients = item.ingredients.every(ing => userInput.includes(ing));
+                
+                if (hasAllIngredients) {
+                    matchedRecipe = item;
+                    break; // 하나라도 찾으면 멈춥니다!
+                }
+            }
+
+            // 3. 화면에 결과 보여주기
+            resultDiv.style.display = "block";
+            
+            if (matchedRecipe) {
+                resultDiv.innerHTML = `<h3>🎉 당첨! ${matchedRecipe.name}</h3><hr>${matchedRecipe.recipe}`;
+            } else {
+                resultDiv.innerHTML = `<h3>😢 꽝! 맞춤 레시피를 찾지 못했어요.</h3><p>김치, 두부, 달걀, 스팸 중에서 다시 입력해 보시겠어요?</p>`;
+            }
         }
     </script>
 </body>
